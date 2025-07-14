@@ -69,4 +69,9 @@ Developed during my volunteer internship at Havensafe, this automation helps mai
 - Homelessness prevention advocates
 
 > "By automating critical information updates, we ensure those in housing crisis can access timely legal support when they need it most."
-[file content end]
+
+## Data Protection
+
+This repository does not handle personal user data. All automation interacts only with:
+- Public websites (via web scraping)
+- Google Sheets API (using service account credentials)
