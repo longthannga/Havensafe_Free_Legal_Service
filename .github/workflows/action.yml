@@ -3,14 +3,18 @@ name: Update Legal Services Sheet
 on:
   schedule:
     - cron: '0 9 * * 1'  # 9 AM UTC every Monday (2 AM PST/1 AM PDT)
-  workflow_dispatch:  # Optional: Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   update-sheet:
     runs-on: ubuntu-latest
+    permissions: 
+      contents: write  # Explicitly grant write permission
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,10 +37,7 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          git commit -m "Auto-update: $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git diff-index --quiet HEAD || git commit -m "Auto-update: $(date +'%Y-%m-%d')"
           
       - name: Push changes
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+        run: git push origin HEAD:main
