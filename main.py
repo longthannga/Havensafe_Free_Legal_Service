@@ -1,0 +1,91 @@
+import gspread
+from google.oauth2.service_account import Credentials
+import legal_hours_check
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+
+scopes = [
+    "https://www.googleapis.com/auth/spreadsheets"    
+]
+
+creds = Credentials.from_service_account_file("credential.json", scopes = scopes)
+client = gspread.authorize(creds)
+
+sheet_id = "1JeB2j62lJX08Zh069dF3ZK2CgFkIQA8zOkHRLMMDaZ4"
+work_book = client.open_by_key(sheet_id)
+
+
+
+sheet = work_book.worksheets()[0]
+
+data = legal_hours_check.get_data()
+# Clear existing data
+sheet.clear()
+
+# Prepare header and data rows
+headers = ["Organization", "Office Hours", "Phone Number"]
+rows = [headers]
+
+for i in range(len(data['name'])):
+    # Combine name and website in the same cell with line break
+    org_with_website = f"{data['name'][i]}\n{data['website'][i]}"
+    rows.append([
+        org_with_website,
+        data['office hours'][i],
+        data['phone'][i]
+    ])
+
+# Write all data to the sheet
+sheet.update(values=rows, range_name='A1')  # Fixed parameter order
+
+# Apply basic formatting
+sheet.format("A1:C1", {
+    "textFormat": {"bold": True,
+            "foregroundColor": {  
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+            }
+            },
+    "backgroundColor": {
+        "red": 42/255,
+        "green": 76/255,
+        "blue": 68/255
+        },
+    "horizontalAlignment": "CENTER"
+})
+
+sheet.format(f"A2:D{len(rows)+1}", {
+    "wrapStrategy": "WRAP",
+    "verticalAlignment": "TOP",
+    "textFormat": {"foregroundColor": {  
+            "red": 42/255,
+            "green": 76/255,
+            "blue": 68/255
+            }
+        }
+})
+
+# Add hyperlinks using HYPERLINK formula
+for i in range(len(data['name'])):
+    row_index = i + 2  # +2 for header row
+    url = data['website'][i]
+    display_text = f"{data['name'][i]}"
+    
+    # Create HYPERLINK formula
+    formula = f'=HYPERLINK("{url}", "{display_text}")'
+    
+    # Update the cell with the formula
+    sheet.update_cell(row_index, 1, formula)
+
+#Date update
+sheet.format("D6", {
+    "horizontalAlignment": "RIGHT"
+})
+california_date = datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d')
+sheet.update_cell(6, 4, "Last updated: " + str(california_date))
+
+# Auto-resize columns
+sheet.columns_auto_resize(0, 2)
+
