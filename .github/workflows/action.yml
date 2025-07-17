@@ -2,7 +2,7 @@ name: Update Legal Services Sheet
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # 9 AM UTC every Monday (2 AM PST/1 AM PDT)
+    - cron: '0 15 * * *'  # 3 PM UTC every day (8 AM PT in summer, 7 AM PT in winter)
   workflow_dispatch:
 
 jobs:

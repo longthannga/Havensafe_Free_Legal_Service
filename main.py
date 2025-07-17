@@ -3,15 +3,16 @@ from google.oauth2.service_account import Credentials
 import legal_hours_check
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import availability_calculator
 
 
 scopes = [
     "https://www.googleapis.com/auth/spreadsheets"    
 ]
 
+
 creds = Credentials.from_service_account_file("credential.json", scopes = scopes)
 client = gspread.authorize(creds)
-
 sheet_id = "1JeB2j62lJX08Zh069dF3ZK2CgFkIQA8zOkHRLMMDaZ4"
 work_book = client.open_by_key(sheet_id)
 
@@ -22,6 +23,7 @@ sheet = work_book.worksheets()[0]
 data = legal_hours_check.get_data()
 # Clear existing data
 sheet.clear()
+
 
 # Prepare header and data rows
 headers = ["Organization", "Office Hours", "Phone Number"]
@@ -36,11 +38,18 @@ for i in range(len(data['name'])):
         data['phone'][i]
     ])
 
+
 # Write all data to the sheet
-sheet.update(values=rows, range_name='A1')  # Fixed parameter order
+sheet.update(values=rows, range_name='A3')  # Fixed parameter order
+
+
 
 # Apply basic formatting
-sheet.format("A1:C1", {
+sheet.merge_cells("A1:C1")
+sheet.merge_cells("B8:C8")
+sheet.merge_cells("A2:C2")
+
+sheet.format("A3:C3", {
     "textFormat": {"bold": True,
             "foregroundColor": {  
             "red": 1.0,
@@ -56,7 +65,8 @@ sheet.format("A1:C1", {
     "horizontalAlignment": "CENTER"
 })
 
-sheet.format(f"A2:D{len(rows)+1}", {
+
+sheet.format(f"A4:D{len(rows)+3}", {
     "wrapStrategy": "WRAP",
     "verticalAlignment": "TOP",
     "textFormat": {"foregroundColor": {  
@@ -64,12 +74,14 @@ sheet.format(f"A2:D{len(rows)+1}", {
             "green": 76/255,
             "blue": 68/255
             }
-        }
+        },
+    "horizontalAlignment": "CENTER"
 })
+
 
 # Add hyperlinks using HYPERLINK formula
 for i in range(len(data['name'])):
-    row_index = i + 2  # +2 for header row
+    row_index = i + 4  # +2 for header row
     url = data['website'][i]
     display_text = f"{data['name'][i]}"
     
@@ -79,13 +91,32 @@ for i in range(len(data['name'])):
     # Update the cell with the formula
     sheet.update_cell(row_index, 1, formula)
 
+
 #Date update
-sheet.format("D6", {
+sheet.format("B8", {
     "horizontalAlignment": "RIGHT"
 })
-california_date = datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d')
-sheet.update_cell(6, 4, "Last updated: " + str(california_date))
+california_date = datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d %H:%M %Z')
+sheet.update_cell(8, 2, "Last updated: " + str(california_date))
+
+
+
+# Generate recommendations from scraped data
+recommendations = availability_calculator.generate_recommendations(data)
+sheet.update(range_name= "A1", values=[[recommendations]])
+
+
+# Format the new sheet
+sheet.format('A1', {
+    "wrapStrategy": "WRAP",
+    "verticalAlignment": "TOP",
+    "textFormat": {
+        "foregroundColor": {"red": 42/255, "green": 76/255, "blue": 68/255},
+    }
+})
+
 
 # Auto-resize columns
 sheet.columns_auto_resize(0, 2)
+sheet.rows_auto_resize(0,8)
 
