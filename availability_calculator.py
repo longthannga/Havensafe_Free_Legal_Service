@@ -20,8 +20,8 @@ def next_available_slot(org_schedule, org_name, phone):
                 slot_end = slot['end']
                 
                 # Create datetime objects for comparison
-                slot_start_dt = datetime.combine(check_date, slot_start).astimezone(tz)
-                slot_end_dt = datetime.combine(check_date, slot_end).astimezone(tz)
+                slot_start_dt = datetime.combine(check_date, slot_start).replace(tzinfo=tz)
+                slot_end_dt = datetime.combine(check_date, slot_end).replace(tzinfo=tz)
                 
                 # Check if slot is in future
                 if now < slot_end_dt:
