@@ -67,16 +67,46 @@ def parse_daily_hours(day_block):
     return slots
 
 def parse_law_foundation(hours_text):
-    """Parse Law Foundation hours"""
+    """Parse Law Foundation hours with improved regex patterns"""
     parsed = {}
-    # Extract phone hours
-    phone_match = re.search(r"Phone Intake Hours:(.*?)WALK-IN HOURS:", hours_text, re.DOTALL)
+    
+    # Extract phone hours section
+    phone_match = re.search(
+        r"Phone Intake Hours:(.*?)(?=WALK-IN HOURS:|\Z)", 
+        hours_text, 
+        re.DOTALL | re.IGNORECASE
+    )
+    
     if phone_match:
         phone_text = phone_match.group(1)
-        # Monday is the only phone day
-        monday_match = re.search(r"Monday\s*([\d\sapm:–-]+)", phone_text)
+        # Parse Monday phone hours
+        monday_match = re.search(r"Monday\s*([\d\sapm:–\-]+)", phone_text, re.IGNORECASE)
         if monday_match:
             parsed['Monday'] = parse_daily_hours(monday_match.group(0))
+            # Explicitly mark as phone service
+            for slot in parsed['Monday']:
+                slot['type'] = 'phone'
+    
+    # Extract walk-in hours section
+    walkin_match = re.search(
+        r"WALK-IN HOURS:(.*?)(?=Every Thursday)", 
+        hours_text, 
+        re.DOTALL | re.IGNORECASE
+    )
+    
+    if not walkin_match:
+        walkin_match = re.search(r"WALK-IN HOURS:(.*)", hours_text, re.DOTALL | re.IGNORECASE)
+    
+    if walkin_match:
+        walkin_text = walkin_match.group(1)
+        # Parse Thursday walk-in hours
+        thursday_match = re.search(r"Thursday\s*([\d\sapm:–\-]+)", walkin_text, re.IGNORECASE)
+        if thursday_match:
+            parsed['Thursday'] = parse_daily_hours(thursday_match.group(0))
+            # Explicitly mark as walk-in service
+            for slot in parsed['Thursday']:
+                slot['type'] = 'walk-in'
+    
     return parsed
 
 def parse_asian_law_alliance(hours_text):
