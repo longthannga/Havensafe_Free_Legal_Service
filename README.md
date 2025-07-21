@@ -75,3 +75,4 @@ Developed during my volunteer internship at Havensafe, this automation helps mai
 This repository does not handle personal user data. All automation interacts only with:
 - Public websites (via web scraping)
 - Google Sheets API (using service account credentials)
+# Requirements_For_Rental_Assistant
