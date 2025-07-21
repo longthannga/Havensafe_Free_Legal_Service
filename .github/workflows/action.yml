@@ -26,10 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create credentials
-        run: echo '${{ secrets.GCP_CREDENTIALS }}' > credential.json
-
       - name: Run updater script
+        env:
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
         run: python main.py
 
       - name: Commit updates
