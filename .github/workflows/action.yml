@@ -30,6 +30,8 @@ jobs:
         run: echo '${{ secrets.GCP_CREDENTIALS }}' > credential.json
 
       - name: Run updater script
+        env:
+          SHEET_ID: ${{ secrets.SHEET_ID }}
         run: python main.py
         
       - name: Commit updates
