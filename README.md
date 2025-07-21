@@ -34,7 +34,7 @@ This repository contains an automated system that updates legal service informat
    - Adds last updated timestamp
 
 3. **Automation**: The GitHub Action workflow:
-   - Runs every Monday at 9 AM UTC (1-2 AM PST)
+   - Runs everyday
    - Securely accesses credentials
    - Executes the scripts
    - Commits any changes back to the repository
