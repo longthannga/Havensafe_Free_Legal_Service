@@ -13,7 +13,6 @@ scopes = [
 ]
 
 
-creds = Credentials.from_service_account_file("credential.json", scopes = scopes)
 creds_json = os.environ['GCP_CREDENTIALS']
 creds_dict = json.loads(creds_json)
 creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
