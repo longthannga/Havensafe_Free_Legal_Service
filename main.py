@@ -94,7 +94,7 @@ for i in range(len(data['name'])):
 
 
 #Date update
-sheet.format("B8", {
+sheet.format("A8", {
     "horizontalAlignment": "RIGHT"
 })
 california_date = datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d %H:%M %Z')
