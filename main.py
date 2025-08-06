@@ -8,7 +8,7 @@ import availability_calculator
 
 scopes = [
     "https://www.googleapis.com/auth/spreadsheets"    
-]
+    ]
 
 
 creds = Credentials.from_service_account_file("credential.json", scopes = scopes)
@@ -26,16 +26,15 @@ sheet.clear()
 
 
 # Prepare header and data rows
-headers = ["Organization", "Office Hours", "Phone Number"]
+headers = ["Organization", "Office Hours"]
 rows = [headers]
 
 for i in range(len(data['name'])):
     # Combine name and website in the same cell with line break
-    org_with_website = f"{data['name'][i]}\n{data['website'][i]}"
+    org_with_website = f"{data['name'][i]}\n{data['phone'][i]}"
     rows.append([
         org_with_website,
         data['office hours'][i],
-        data['phone'][i]
     ])
 
 
@@ -83,7 +82,7 @@ sheet.format(f"A4:D{len(rows)+3}", {
 for i in range(len(data['name'])):
     row_index = i + 4  # +2 for header row
     url = data['website'][i]
-    display_text = f"{data['name'][i]}"
+    display_text = f"{data['name'][i]}\n{data['phone'][i]}"
     
     # Create HYPERLINK formula
     formula = f'=HYPERLINK("{url}", "{display_text}")'

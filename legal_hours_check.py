@@ -19,7 +19,7 @@ def append_to_dic(name = "", hours = "", phone = "", website = ""):
 
 def page1_scraping():
     try:
-        url = "https://www.lawfoundation.org/housing-resources"
+        url = "https://www.lawfoundation.org/housingresources"
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
         
