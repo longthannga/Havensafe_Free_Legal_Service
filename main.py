@@ -46,11 +46,11 @@ sheet.update(values=rows, range_name='A3')  # Fixed parameter order
 
 
 # Apply basic formatting
-sheet.merge_cells("A1:C1")
-sheet.merge_cells("B8:C8")
-sheet.merge_cells("A2:C2")
+sheet.merge_cells("A1:B1")
+sheet.merge_cells("A8:B8")
+sheet.merge_cells("A2:B2")
 
-sheet.format("A3:C3", {
+sheet.format("A3:B3", {
     "textFormat": {"bold": True,
             "foregroundColor": {  
             "red": 1.0,
@@ -98,7 +98,7 @@ sheet.format("B8", {
     "horizontalAlignment": "RIGHT"
 })
 california_date = datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d %H:%M %Z')
-sheet.update_cell(8, 2, "Last updated: " + str(california_date))
+sheet.update_cell(8, 1, "Last updated: " + str(california_date))
 
 
 
