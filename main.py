@@ -1,3 +1,5 @@
+import os
+import json
 import gspread
 from google.oauth2.service_account import Credentials
 import legal_hours_check
@@ -13,7 +15,7 @@ scopes = [
 
 creds = Credentials.from_service_account_file("credential.json", scopes = scopes)
 client = gspread.authorize(creds)
-sheet_id = "1JeB2j62lJX08Zh069dF3ZK2CgFkIQA8zOkHRLMMDaZ4"
+sheet_id = os.environ.get('SHEET_ID')
 work_book = client.open_by_key(sheet_id)
 
 

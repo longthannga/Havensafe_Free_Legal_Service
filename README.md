@@ -34,7 +34,7 @@ This repository contains an automated system that updates legal service informat
    - Adds last updated timestamp
 
 3. **Automation**: The GitHub Action workflow:
-   - Runs every Monday at 9 AM UTC (1-2 AM PST)
+   - Runs every day
    - Securely accesses credentials
    - Executes the scripts
    - Commits any changes back to the repository
@@ -47,7 +47,7 @@ This repository contains an automated system that updates legal service informat
 ## 🔒 Security
 - Credentials are stored in GitHub Secrets
 - `credential.json` is excluded via `.gitignore`
-- Service account has limited Google Sheets access
+- The service account has limited Google Sheets access
 
 ## ⏱️ Scheduled Updates
 The system automatically updates the Google Sheet every Monday morning. You can also trigger updates manually:
