@@ -117,7 +117,4 @@ sheet.format('A1', {
 })
 
 
-# Auto-resize columns
-sheet.columns_auto_resize(0, 2)
-sheet.rows_auto_resize(0,8)
 
