@@ -1,13 +1,13 @@
 name: Update Legal Services Sheet
 
 on:
-  schedule:
-    # Run at 8:30 AM PT (15:30 UTC) - Before most services open
-    - cron: '30 15 * * *'
-    # Run at 12:00 PM PT (19:00 UTC) - Midday update
-    - cron: '0 19 * * *'  
-    # Run at 6:00 PM PT (1:00 UTC next day) - End of day update
-    - cron: '0 1 * * *'   
+  # schedule:
+  #   # Run at 8:30 AM PT (15:30 UTC) - Before most services open
+  #   - cron: '30 15 * * *'
+  #   # Run at 12:00 PM PT (19:00 UTC) - Midday update
+  #   - cron: '0 19 * * *'  
+  #   # Run at 6:00 PM PT (1:00 UTC next day) - End of day update
+  #   - cron: '0 1 * * *'   
   workflow_dispatch:
 
 jobs:
