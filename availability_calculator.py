@@ -23,8 +23,8 @@ def next_available_slot(org_schedule, org_name, phone):
                 slot_start_dt = datetime.combine(check_date, slot_start).replace(tzinfo=tz)
                 slot_end_dt = datetime.combine(check_date, slot_end).replace(tzinfo=tz)
                 
-                # Apply 30-minute availability window for Law Foundation and Bay Area Legal Aid
-                if "Law Foundation" in org_name or "Bay Area Legal Aid" in org_name:
+                # Apply 30-minute availability window for Law Foundation, Bay Area Legal Aid, and Pro Bono Project
+                if "Law Foundation" in org_name or "Bay Area Legal Aid" in org_name or "Pro Bono Project" in org_name:
                     # These organizations are only available for the first 30 minutes of their slot
                     effective_end_dt = slot_start_dt + timedelta(minutes=30)
                     # Use the earlier of the 30-minute mark or the actual end time
@@ -61,6 +61,8 @@ def generate_recommendations(data):
             org_schedules[name] = parse_hours.parse_asian_law_alliance(hours_text)
         elif "Bay Area Legal Aid" in name:
             org_schedules[name] = parse_hours.parse_bay_legal_aid(hours_text)
+        elif "Pro Bono Project" in name:
+            org_schedules[name] = parse_hours.parse_pro_bono_project(hours_text)
         elif "Senior Adults" in name:
             org_schedules[name] = parse_hours.parse_sala(hours_text)
     

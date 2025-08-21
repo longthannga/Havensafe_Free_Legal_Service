@@ -67,7 +67,8 @@ sheet.format("A3:B3", {
 })
 
 
-sheet.format(f"A4:D{len(rows)+3}", {
+# Update the range to accommodate the new organization (now 5 organizations instead of 4)
+sheet.format(f"A4:B{len(rows)+3}", {
     "wrapStrategy": "WRAP",
     "verticalAlignment": "TOP",
     "textFormat": {"foregroundColor": {  
@@ -82,7 +83,7 @@ sheet.format(f"A4:D{len(rows)+3}", {
 
 # Add hyperlinks using HYPERLINK formula
 for i in range(len(data['name'])):
-    row_index = i + 4  # +2 for header row
+    row_index = i + 4  # +4 for header rows and starting position
     url = data['website'][i]
     display_text = f"{data['name'][i]}\n{data['phone'][i]}"
     
@@ -93,13 +94,17 @@ for i in range(len(data['name'])):
     sheet.update_cell(row_index, 1, formula)
 
 
-#Date update
-sheet.format("A8", {
+#Date update - adjust row number for the new organization
+# Now we have 5 organizations, so the date should go in row 9 instead of 8
+date_row = len(data['name']) + 4  # 5 orgs + 3 header/spacing rows + 1 for next available row
+sheet.format(f"A{date_row}", {
     "horizontalAlignment": "RIGHT"
 })
 california_date = datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d %H:%M %Z')
-sheet.update_cell(8, 1, "Last updated: " + str(california_date))
+sheet.update_cell(date_row, 1, "Last updated: " + str(california_date))
 
+# Also need to merge the cells for the date row
+sheet.merge_cells(f"A{date_row}:B{date_row}")
 
 
 # Generate recommendations from scraped data
@@ -115,6 +120,3 @@ sheet.format('A1', {
         "foregroundColor": {"red": 42/255, "green": 76/255, "blue": 68/255},
     }
 })
-
-
-

@@ -150,3 +150,37 @@ def parse_sala(hours_text):
         'Thursday': [{'start': time(9), 'end': time(17), 'type': 'general'}],
         'Friday': [{'start': time(9), 'end': time(17), 'type': 'general'}]
     }
+
+def parse_pro_bono_project(hours_text):
+    """Parse Pro Bono Project hours - Monday, Wednesday & Friday 8:30am-4:30pm"""
+    parsed = {}
+    
+    # Look for the specific pattern "Monday, Wednesday & Friday 8:30am-4:30pm"
+    pattern = r"(?:Monday|Wednesday|Friday).*?(\d{1,2}:\d{2}[ap]m)\s*[-–—]\s*(\d{1,2}:\d{2}[ap]m)"
+    match = re.search(pattern, hours_text, re.IGNORECASE)
+    
+    if match:
+        start_time = parse_time(match.group(1))
+        end_time = parse_time(match.group(2))
+        
+        if start_time and end_time:
+            # Add the same hours for Monday, Wednesday, and Friday
+            for day in ['Monday', 'Wednesday', 'Friday']:
+                parsed[day] = [{
+                    'start': start_time,
+                    'end': end_time,
+                    'type': 'phone'  # Pro Bono Project uses telephone hours
+                }]
+    else:
+        # Fallback: default hours if pattern not found
+        default_start = time(8, 30)  # 8:30 AM
+        default_end = time(16, 30)   # 4:30 PM
+        
+        for day in ['Monday', 'Wednesday', 'Friday']:
+            parsed[day] = [{
+                'start': default_start,
+                'end': default_end,
+                'type': 'phone'
+            }]
+    
+    return parsed
