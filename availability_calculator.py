@@ -75,9 +75,9 @@ def generate_recommendations(data):
     # Sort by next available time
     recommendations.sort(key=lambda x: x['datetime'])
     
-    # Format recommendations
+    # Format recommendations - Fixed the formatting issue
     if recommendations:
-        message = "Unless you are eligible for SALA (age 60+), here are the next/current available legal advice line(s):\n"
+        lines = []
         for rec in recommendations:
             # Generate appropriate note based on service type
             if rec['type'] == 'phone':
@@ -87,6 +87,9 @@ def generate_recommendations(data):
             else:
                 note = ""
             
-            message += f"{rec['time']} on {rec['day']}, {rec['org']}, {rec['phone']}{note}\n"
-        return message.strip()
+            lines.append(f"{rec['time']} on {rec['day']}, {rec['org']}, {rec['phone']}{note}")
+        
+        # Join lines with newlines and add the header
+        message = "Unless you are eligible for SALA (age 60+), here are the next/current available legal advice line(s):\n" + "\n".join(lines)
+        return message
     return "No available services found. Please check back during business hours."

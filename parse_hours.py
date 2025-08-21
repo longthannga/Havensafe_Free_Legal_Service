@@ -43,7 +43,7 @@ def parse_daily_hours(day_block):
     slots = []
     # Find all time ranges in the text
     time_ranges = re.findall(
-        r'(\d{1,2}(?::\d{2})?\s*[ap]?m?|\d{1,2}(?::\d{2})?)\s*[-–to]+\s*(\d{1,2}(?::\d{2})?\s*[ap]?m?|\d{1,2}(?::\d{2})?)',
+        r'(\d{1,2}(?::\d{2})?\s*[ap]?m?|\d{1,2}(?::\d{2})?)\s*[-–—to]+\s*(\d{1,2}(?::\d{2})?\s*[ap]?m?|\d{1,2}(?::\d{2})?)',
         day_block, 
         re.IGNORECASE
     )
@@ -80,32 +80,41 @@ def parse_law_foundation(hours_text):
     if phone_match:
         phone_text = phone_match.group(1)
         # Parse Monday phone hours
-        monday_match = re.search(r"Monday\s*([\d\sapm:–\-]+)", phone_text, re.IGNORECASE)
+        monday_match = re.search(r"Monday\s*([\d\sapm:–—\-]+)", phone_text, re.IGNORECASE)
         if monday_match:
             parsed['Monday'] = parse_daily_hours(monday_match.group(0))
             # Explicitly mark as phone service
             for slot in parsed['Monday']:
                 slot['type'] = 'phone'
     
-    # Extract walk-in hours section
+    # Extract walk-in hours section - Updated to handle "Every Thursday from 1pm until appointments are full"
     walkin_match = re.search(
-        r"WALK-IN HOURS:(.*?)(?=Every Thursday)", 
+        r"WALK-IN HOURS:(.*)", 
         hours_text, 
         re.DOTALL | re.IGNORECASE
     )
     
-    if not walkin_match:
-        walkin_match = re.search(r"WALK-IN HOURS:(.*)", hours_text, re.DOTALL | re.IGNORECASE)
-    
     if walkin_match:
         walkin_text = walkin_match.group(1)
-        # Parse Thursday walk-in hours
-        thursday_match = re.search(r"Thursday\s*([\d\sapm:–\-]+)", walkin_text, re.IGNORECASE)
+        # Look for Thursday walk-in pattern - handle "Every Thursday from 1pm until appointments are full"
+        thursday_pattern = r"(?:Every\s+)?Thursday\s+from\s+(\d{1,2}(?::\d{2})?\s*[ap]m)(?:\s+until\s+appointments\s+are\s+full)?|Thursday\s*([\d\sapm:–—\-]+)"
+        thursday_match = re.search(thursday_pattern, walkin_text, re.IGNORECASE)
+        
         if thursday_match:
-            parsed['Thursday'] = parse_daily_hours(thursday_match.group(0))
-            # Explicitly mark as walk-in service
-            for slot in parsed['Thursday']:
-                slot['type'] = 'walk-in'
+            if thursday_match.group(1):  # "from 1pm until appointments are full" format
+                start_time = parse_time(thursday_match.group(1))
+                if start_time:
+                    # Set end time to 5pm as a reasonable closing time
+                    parsed['Thursday'] = [{
+                        'start': start_time,
+                        'end': time(17, 0),  # 5:00 PM
+                        'type': 'walk-in'
+                    }]
+            elif thursday_match.group(2):  # Regular time range format
+                parsed['Thursday'] = parse_daily_hours(thursday_match.group(0))
+                # Explicitly mark as walk-in service
+                for slot in parsed['Thursday']:
+                    slot['type'] = 'walk-in'
     
     return parsed
 
