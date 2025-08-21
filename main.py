@@ -47,7 +47,6 @@ sheet.update(values=rows, range_name='A3')  # Fixed parameter order
 
 # Apply basic formatting
 sheet.merge_cells("A1:B1")
-sheet.merge_cells("A8:B8")
 sheet.merge_cells("A2:B2")
 
 sheet.format("A3:B3", {
