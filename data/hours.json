@@ -1,0 +1,108 @@
+{
+  "timezone": "America/Los_Angeles",
+  "_how_to_edit": "Times are 24-hour HH:MM in Pacific time. type is phone, walk-in or general. call_window_minutes limits a slot to its first N minutes (for lines that fill up fast). label replaces the time in the recommendation line. Remove needs_review once you have confirmed the item.",
+  "organizations": [
+    {
+      "id": "law-foundation",
+      "name": "Law Foundation of Silicon Valley",
+      "phone": "(408) 280-2424",
+      "website": "https://www.lawfoundation.org/housingresources",
+      "source_url": "https://www.lawfoundation.org/housingresources",
+      "last_verified": "2026-11-18",
+      "needs_review": "The page lists the walk-in clinic (arrive by 12:30pm, starts 1pm) but no longer names the day. Thursday is carried over from the old data.",
+      "recommend": true,
+      "call_window_minutes": 30,
+      "display_hours": "Phone intake (non-urgent housing info): Monday 9–11am, no voicemail\nWalk-in clinic for tenants with an eviction lawsuit: Thursdays, arrive by 12:30pm (clinic starts 1pm)\nEviction 101 workshop: Thursdays 1pm",
+      "schedule": {
+        "Monday": [
+          {"start": "09:00", "end": "11:00", "type": "phone"}
+        ],
+        "Thursday": [
+          {"start": "12:30", "end": "12:30", "type": "walk-in", "label": "arrive by 12:30pm"}
+        ]
+      }
+    },
+    {
+      "id": "asian-law-alliance",
+      "name": "Asian Law Alliance",
+      "phone": "(408) 287-9710",
+      "website": "https://asianlawalliance.org/contact",
+      "source_url": "https://asianlawalliance.org/contact",
+      "last_verified": "2026-11-18",
+      "recommend": true,
+      "display_hours": "Intake (first come, first served; call to confirm):\nMonday 1–3:30pm (phone only, no walk-ins)\nTuesday 9–11:30am, 1–3:30pm\nWednesday 1–3:30pm\nThursday 9–11:30am, 1–3:30pm\nFriday 9–11:30am",
+      "schedule": {
+        "Monday": [
+          {"start": "13:00", "end": "15:30", "type": "phone"}
+        ],
+        "Tuesday": [
+          {"start": "09:00", "end": "11:30", "type": "general"},
+          {"start": "13:00", "end": "15:30", "type": "general"}
+        ],
+        "Wednesday": [
+          {"start": "13:00", "end": "15:30", "type": "general"}
+        ],
+        "Thursday": [
+          {"start": "09:00", "end": "11:30", "type": "general"},
+          {"start": "13:00", "end": "15:30", "type": "general"}
+        ],
+        "Friday": [
+          {"start": "09:00", "end": "11:30", "type": "general"}
+        ]
+      }
+    },
+    {
+      "id": "bay-area-legal-aid",
+      "name": "Bay Area Legal Aid",
+      "phone": "(800) 551-5554",
+      "website": "https://baylegal.org/get-help/",
+      "source_url": "https://baylegal.org/get-help/",
+      "last_verified": "2026-11-18",
+      "recommend": true,
+      "call_window_minutes": 30,
+      "display_hours": "Legal Advice Line (until capacity is reached):\nMonday & Thursday 9:30am–3pm\nTuesday & Wednesday 9:30am–1pm\nFriday–Sunday closed",
+      "schedule": {
+        "Monday":    [{"start": "09:30", "end": "15:00", "type": "phone"}],
+        "Tuesday":   [{"start": "09:30", "end": "13:00", "type": "phone"}],
+        "Wednesday": [{"start": "09:30", "end": "13:00", "type": "phone"}],
+        "Thursday":  [{"start": "09:30", "end": "15:00", "type": "phone"}]
+      }
+    },
+    {
+      "id": "sala",
+      "name": "Senior Adults Legal Assistance (SALA)",
+      "phone": "(408) 295-5991",
+      "website": "http://s393914827.initial-website.com/",
+      "source_url": "http://s393914827.initial-website.com/",
+      "last_verified": "2026-11-18",
+      "needs_review": "The website no longer lists Central Office Hours. 9am–5pm weekdays is carried over from the old code; confirm by phone.",
+      "recommend": false,
+      "display_hours": "For adults 60+\nMonday–Friday 9am–5pm\nSame number is the hotline for urgent matters",
+      "schedule": {
+        "Monday":    [{"start": "09:00", "end": "17:00", "type": "general"}],
+        "Tuesday":   [{"start": "09:00", "end": "17:00", "type": "general"}],
+        "Wednesday": [{"start": "09:00", "end": "17:00", "type": "general"}],
+        "Thursday":  [{"start": "09:00", "end": "17:00", "type": "general"}],
+        "Friday":    [{"start": "09:00", "end": "17:00", "type": "general"}]
+      }
+    },
+    {
+      "id": "pro-bono-project",
+      "name": "Pro Bono Project Silicon Valley",
+      "phone": "(408) 998-5298",
+      "website": "https://www.probonoproject.org/contact/",
+      "source_url": "https://www.probonoproject.org/contact/",
+      "last_verified": "2026-11-18",
+      "recommend": true,
+      "call_window_minutes": 30,
+      "display_hours": "Telephone hours: Monday–Friday 9am–4:30pm",
+      "schedule": {
+        "Monday":    [{"start": "09:00", "end": "16:30", "type": "phone"}],
+        "Tuesday":   [{"start": "09:00", "end": "16:30", "type": "phone"}],
+        "Wednesday": [{"start": "09:00", "end": "16:30", "type": "phone"}],
+        "Thursday":  [{"start": "09:00", "end": "16:30", "type": "phone"}],
+        "Friday":    [{"start": "09:00", "end": "16:30", "type": "phone"}]
+      }
+    }
+  ]
+}
