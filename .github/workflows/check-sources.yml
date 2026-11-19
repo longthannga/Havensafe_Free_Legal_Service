@@ -1,0 +1,39 @@
+name: Monthly hours check
+
+# On the 1st of each month, re-read each website and open a pull request
+# if the hours text changed. A person then updates data/hours.json.
+on:
+  schedule:
+    - cron: "17 16 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python check_sources.py
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: hours-check
+          delete-branch: true
+          commit-message: "Website hours changed"
+          title: "Website hours changed - please review"
+          body: |
+            One or more organization websites show different hours text than last month.
+
+            1. Look at the diff in `data/snapshots/` to see what changed.
+            2. Update `data/hours.json` (schedule and display_hours) to match, and set `last_verified`.
+            3. Run `python availability.py --cron` and paste the output over the cron lines in `.github/workflows/update-sheet.yml`.
+            4. Merge. The sheet updates automatically.
+
+            "FETCH FAILED" or "NO HOURS FOUND" means the page moved or blocked the request; check the site by hand.

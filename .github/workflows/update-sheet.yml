@@ -1,0 +1,37 @@
+name: Update sheet
+
+# Runs on weekdays just after each time a line opens or closes, so the
+# "next/current available" message is always up to date. Times are UTC and
+# cover both PST and PDT, so a few runs land when nothing has changed;
+# those runs just rewrite the same message.
+#
+# These times come from data/hours.json. When the hours change, run
+#   python availability.py --cron
+# and paste its output over the two cron lines below.
+on:
+  schedule:
+    - cron: "1 16,17,18,20,21 * * 1-5"
+    - cron: "31 16,17,18,19,20,22,23 * * 1-5"
+  push:
+    paths:
+      - "data/hours.json"
+  workflow_dispatch:
+
+concurrency:
+  group: update-sheet
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python update_sheet.py
+        env:
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
