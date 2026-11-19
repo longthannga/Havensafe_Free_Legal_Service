@@ -34,4 +34,4 @@ jobs:
       - run: python update_sheet.py
         env:
           SHEET_ID: ${{ secrets.SHEET_ID }}
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
