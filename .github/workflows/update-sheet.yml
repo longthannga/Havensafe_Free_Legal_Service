@@ -1,17 +1,17 @@
 name: Update sheet
 
-# Runs on weekdays just after each time a line opens or closes, so the
-# "next/current available" message is always up to date. Times are UTC and
-# cover both PST and PDT, so a few runs land when nothing has changed;
-# those runs just rewrite the same message.
+# Updates the sheet on weekdays at 8am, noon, 2pm and 5pm Pacific.
 #
-# These times come from data/hours.json. When the hours change, run
-#   python availability.py --cron
-# and paste its output over the two cron lines below.
+# GitHub cron is in UTC and doesn't follow daylight saving, so each time is
+# scheduled twice (once for PST, once for PDT). The first step checks the
+# Pacific time and skips the run if it isn't one of the four hours.
+# To change the times, edit RUN_HOURS below and the cron lines.
 on:
   schedule:
-    - cron: "1 16,17,18,20,21 * * 1-5"
-    - cron: "31 16,17,18,19,20,22,23 * * 1-5"
+    # 8am, noon, 2pm Pacific = 15/16, 19/20, 21/22 UTC (PDT/PST)
+    - cron: "5 15,16,19,20,21,22 * * 1-5"
+    # 5pm Pacific = 00/01 UTC, which is already the next day in UTC
+    - cron: "5 0,1 * * 2-6"
   push:
     paths:
       - "data/hours.json"
@@ -21,17 +21,36 @@ concurrency:
   group: update-sheet
   cancel-in-progress: true
 
+env:
+  RUN_HOURS: "08 12 14 17"
+
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - name: Check Pacific time
+        id: time
+        run: |
+          hour=$(TZ=America/Los_Angeles date +%H)
+          echo "Pacific hour: $hour"
+          # Manual runs and hours.json changes always go ahead.
+          if [ "${{ github.event_name }}" != "schedule" ] || [[ " $RUN_HOURS " == *" $hour "* ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Not one of the update times; skipping."
+          fi
+
+      - if: steps.time.outputs.run == 'true'
+        uses: actions/checkout@v5
+      - if: steps.time.outputs.run == 'true'
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -r requirements.txt
-      - run: python update_sheet.py
+      - if: steps.time.outputs.run == 'true'
+        run: pip install -r requirements.txt
+      - if: steps.time.outputs.run == 'true'
+        run: python update_sheet.py
         env:
           SHEET_ID: ${{ secrets.SHEET_ID }}
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
